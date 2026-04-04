@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniFECAF · Sales Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C8102E;--rd:#9a0c22;--rg:rgba(200,16,46,0.12);--black:#090909;--s1:#111;--s2:#171717;--s3:#1e1e1e;--border:rgba(255,255,255,0.07);--brd:rgba(200,16,46,0.32);--text:#EDEAE5;--muted:#6B6B6B;--dim:#3A3A3A;--green:#22c55e;--yellow:#f59e0b;--fd:'DM Serif Display',serif;--fu:'Syne',sans-serif;--fm:'DM Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--text);font-family:var(--fu);min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:15px 28px;border-bottom:1px solid var(--border);background:rgba(9,9,9,.92);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px}
+.bm{width:32px;height:32px;background:var(--red);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:16px;color:#fff}
+.bn{font-family:var(--fd);font-size:18px}
+.bs{font-size:9px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-family:var(--fm)}
+.npill{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);font-family:var(--fm);border:1px solid var(--border);border-radius:20px;padding:4px 10px}
+.ndot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.screen{display:none;flex:1;flex-direction:column;align-items:center;padding:40px 20px;gap:20px}
+.screen.active{display:flex}
+.hero{text-align:center;max-width:540px}
+.htag{font-family:var(--fm);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+.htag::before,.htag::after{content:'';width:24px;height:1px;background:var(--rd)}
+.hh{font-family:var(--fd);font-size:clamp(32px,5vw,58px);line-height:1.06;letter-spacing:-.025em;margin-bottom:14px}
+.hh em{font-style:italic;color:var(--red)}
+.hp{color:var(--muted);font-size:14px;line-height:1.8;max-width:400px;margin:0 auto}
+.cards{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:24px;width:255px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,var(--rg),transparent 60%);opacity:0;transition:opacity .25s}
+.card:hover{border-color:var(--brd);transform:translateY(-4px);box-shadow:0 18px 50px rgba(200,16,46,.1)}
+.card:hover::before{opacity:1}
+.cico{width:44px;height:44px;background:var(--s2);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.ctag{font-family:var(--fm);font-size:9px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px}
+.ctit{font-size:16px;font-weight:700;margin-bottom:5px}
+.cdesc{font-size:12px;color:var(--muted);line-height:1.6}
+.carr{position:absolute;bottom:18px;right:18px;width:24px;height:24px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;opacity:0;transform:scale(.5);transition:all .25s}
+.card:hover .carr{opacity:1;transform:scale(1)}
+.cfw{width:100%;max-width:640px;display:flex;flex-direction:column;gap:20px}
+.back{font-size:12px;color:var(--muted);cursor:pointer;font-family:var(--fm);transition:color .2s}
+.back:hover{color:var(--text)}
+.cfs{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.lbl{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-family:var(--fm)}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:6px 13px;border-radius:100px;border:1px solid var(--border);font-size:12px;cursor:pointer;transition:all .18s;color:var(--muted);background:var(--s1);font-family:var(--fu);user-select:none}
+.pill:hover{border-color:var(--brd);color:var(--text)}
+.pill.on{border-color:var(--red);background:rgba(200,16,46,.1);color:var(--text)}
+.srow{display:flex;align-items:center;gap:10px}
+.srow input[type=range]{flex:1;-webkit-appearance:none;height:2px;background:var(--s3);border-radius:2px;outline:none}
+.srow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--red);cursor:pointer;border:2px solid #000;box-shadow:0 0 0 2px var(--rd)}
+.sv{font-family:var(--fm);font-size:12px;color:var(--red);min-width:58px;text-align:right}
+.slbs{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);font-family:var(--fm)}
+.ta{width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;font-family:var(--fm);font-size:12px;resize:vertical;min-height:60px;outline:none;transition:border-color .2s;line-height:1.6}
+.ta:focus{border-color:var(--brd)}
+.ta::placeholder{color:var(--dim)}
+.brow{display:flex;gap:8px;flex-wrap:wrap}
+.btnr{background:var(--red);color:#fff;border:none;padding:11px 22px;border-radius:8px;font-size:13px;font-weight:700;font-family:var(--fu);cursor:pointer;transition:opacity .18s}
+.btnr:hover{opacity:.85}
+.btng{background:var(--s2);color:var(--text);border:1px solid var(--border);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;font-family:var(--fu);cursor:pointer}
+.btng:hover{border-color:var(--brd)}
+#s-chat{padding:0;align-items:stretch}
+.cwrap{display:flex;flex-direction:column;height:calc(100vh - 63px)}
+.cbar{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid var(--border);background:var(--s1);flex-shrink:0}
+.cpers{display:flex;align-items:center;gap:8px}
+.cav{width:32px;height:32px;border-radius:50%;background:#132213;display:flex;align-items:center;justify-content:center;font-size:15px;border:1.5px solid rgba(34,197,94,.25)}
+.cn{font-weight:700;font-size:13px}
+.col{font-size:10px;color:var(--green);display:flex;align-items:center;gap:3px}
+.col::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--green)}
+.cm{display:flex;align-items:center;gap:7px}
+.db{font-size:9px;padding:3px 7px;border-radius:10px;font-weight:700}
+.de{background:#EAF3DE;color:#3B6D11}.dm{background:#FAEEDA;color:#854F0B}.dh{background:#FCEBEB;color:#A32D2D}
+.mc{font-size:10px;color:var(--muted);font-family:var(--fm)}
+.eb{font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid var(--brd);color:var(--red);background:transparent;cursor:pointer;font-family:var(--fu);font-weight:700}
+.eb:hover{background:rgba(200,16,46,.1)}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:#0a0a0a}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+.msg{max-width:74%;display:flex;flex-direction:column;gap:2px}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.msg.them{align-self:flex-start;align-items:flex-start}
+.bb{padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.65;word-break:break-word}
+.msg.me .bb{background:var(--red);color:#fff;border-radius:12px 12px 3px 12px}
+.msg.them .bb{background:var(--s2);border:1px solid var(--border);border-radius:12px 12px 12px 3px;color:var(--text)}
+.mt{font-size:9px;color:var(--dim);font-family:var(--fm)}
+.typing{display:flex;align-items:center;gap:3px;padding:8px 12px;background:var(--s2);border:1px solid var(--border);border-radius:12px 12px 12px 3px;width:fit-content;align-self:flex-start}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:td 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{transform:scale(1);opacity:.3}40%{transform:scale(1.4);opacity:1}}
+.cir{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);background:var(--s1);flex-shrink:0}
+.cir input{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:100px;padding:8px 15px;font-size:13px;font-family:var(--fu);outline:none;transition:border-color .2s}
+.cir input:focus{border-color:var(--brd)}
+.cir input::placeholder{color:var(--dim)}
+.sb{width:34px;height:34px;background:var(--red);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;flex-shrink:0}
+.sb:hover{opacity:.85}
+.sb:disabled{opacity:.35;cursor:not-allowed}
+#s-voice{justify-content:center}
+.vw{width:100%;max-width:420px;display:flex;flex-direction:column;gap:18px}
+.vc{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.cr{width:110px;height:110px;border-radius:50%;background:var(--s2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative}
+.cr.on{background:#132213;border-color:rgba(34,197,94,.35)}
+.cr.on::before{content:'';position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(34,197,94,.2);animation:rng 2s ease-out infinite}
+.cr.on::after{content:'';position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(34,197,94,.1);animation:rng 2s ease-out infinite .4s}
+@keyframes rng{0%{opacity:.5;transform:scale(1)}100%{opacity:0;transform:scale(1.1)}}
+.vn{font-family:var(--fd);font-size:18px}
+.vst{font-size:11px;color:var(--muted)}
+.vt{font-family:var(--fm);font-size:26px;letter-spacing:.1em;color:var(--muted)}
+.vt.on{color:var(--green)}
+.vcs{display:flex;gap:12px;align-items:center}
+.cb{width:50px;height:50px;border-radius:50%;border:none;cursor:pointer;font-size:19px;display:flex;align-items:center;justify-content:center}
+.cb:hover{opacity:.85}
+.cb-s{background:var(--green);color:#fff}.cb-e{background:#dc2626;color:#fff}.cb-m{background:var(--s3);border:1px solid var(--border);color:var(--text)}
+.tr{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:14px;max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:7px}
+.tr::-webkit-scrollbar{width:3px}.tr::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+.trl{font-size:12px;line-height:1.65;padding:7px 10px;border-radius:6px}
+.trl.ag{background:var(--s3);color:var(--text)}.trl.ld{background:#0d1a0d;color:#86efac;border:1px solid rgba(34,197,94,.15)}
+.trl strong{font-size:9px;font-weight:700;display:block;margin-bottom:2px;opacity:.55;letter-spacing:.08em}
+.trem{font-size:12px;color:var(--muted);text-align:center;padding:16px}
+.vir{display:flex;gap:8px}
+.vir input{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--text);border-radius:100px;padding:8px 15px;font-size:13px;font-family:var(--fu);outline:none;transition:border-color .2s}
+.vir input:focus{border-color:var(--brd)}
+.vir input::placeholder{color:var(--dim)}
+.vs{width:34px;height:34px;background:var(--green);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#fff;flex-shrink:0}
+.vs:hover{opacity:.85}
+#s-an{justify-content:flex-start}
+.aw{width:100%;max-width:700px;display:flex;flex-direction:column;gap:18px}
+.ah{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.at{font-family:var(--fd);font-size:24px}
+.asb{font-size:12px;color:var(--muted);margin-top:3px}
+.asc{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:14px 20px;text-align:center;flex-shrink:0}
+.anum{font-family:var(--fd);font-size:40px;line-height:1}
+.alb{font-size:9px;color:var(--muted);font-family:var(--fm);text-transform:uppercase;letter-spacing:.12em;margin-top:1px}
+.ldg{display:flex;flex-direction:column;align-items:center;gap:12px;padding:48px 0;color:var(--muted);font-size:12px}
+.sp{width:28px;height:28px;border:2px solid var(--s3);border-top-color:var(--red);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.sts{display:flex;flex-direction:column;gap:4px;text-align:left}
+.stp{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.stp.done{color:var(--green)}.stp.act{color:var(--text)}
+.abdy{display:flex;flex-direction:column;gap:14px}
+.mg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.met{background:var(--s2);border-radius:8px;padding:10px;text-align:center}
+.mv{font-family:var(--fd);font-size:22px;margin-bottom:2px}
+.mlb{font-size:9px;color:var(--muted);font-family:var(--fm);text-transform:uppercase;letter-spacing:.08em}
+.ablk{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:16px}
+.albl{font-size:11px;font-weight:700;margin-bottom:10px}
+.ai{font-size:13px;color:var(--text);line-height:1.65;padding:7px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start}
+.ai:last-child{border:none;padding-bottom:0}
+.aic{flex-shrink:0;font-size:14px;margin-top:1px}
+.atx{font-size:13px;line-height:1.75;color:var(--text)}
+.aq{font-size:11px;color:var(--muted);background:var(--s2);border-left:2px solid var(--red);padding:6px 10px;border-radius:0 4px 4px 0;margin-top:5px;line-height:1.6}
+.aq.ok{border-left-color:var(--green)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+<nav>
+  <div class="brand"><div class="bm">F</div><div><div class="bn">UniFECAF</div><div class="bs">Sales Trainer Pro</div></div></div>
+  <div class="npill"><span class="ndot"></span>IA Ativa</div>
+</nav>
+
+<div class="screen active" id="s-home">
+  <div class="hero">
+    <div class="htag">Treinamento Comercial</div>
+    <h1 class="hh">Simule atendimentos <em>reais</em></h1>
+    <p class="hp">IA treinada com o Manual de Vendas da UniFECAF. Configure o lead, enfrente objeções e receba análise detalhada.</p>
+  </div>
+  <div class="cards">
+    <div class="card" onclick="openCfg('whatsapp')"><div class="cico">💬</div><div class="ctag">Módulo 01</div><div class="ctit">WhatsApp</div><p class="cdesc">Simule conversa por mensagem com um lead configurado pela IA.</p><div class="carr">→</div></div>
+    <div class="card" onclick="openCfg('voice')"><div class="cico">📞</div><div class="ctag">Módulo 02</div><div class="ctit">Ligação</div><p class="cdesc">Simule uma ligação com transcrição em tempo real.</p><div class="carr">→</div></div>
+  </div>
+</div>
+
+<div class="screen" id="s-cfg">
+  <div class="cfw">
+    <div class="back" onclick="goHome()">← voltar</div>
+    <div><div style="font-family:var(--fm);font-size:10px;color:var(--red);letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px" id="cfg-mode">Módulo WhatsApp</div><div style="font-family:var(--fd);font-size:26px">Configure a simulação</div></div>
+    <div class="cfs">
+      <div><div class="lbl">Perfil do Lead</div><div class="pills" id="p-perf">
+        <div class="pill on" data-g="perf" data-v="Aluno interessado em graduação EAD pela primeira vez">🎓 Graduação EAD</div>
+        <div class="pill" data-g="perf" data-v="Aluno querendo transferência de outra faculdade">🔄 Transferência</div>
+        <div class="pill" data-g="perf" data-v="Empresa buscando convênio corporativo">🏢 Corporativo</div>
+        <div class="pill" data-g="perf" data-v="Lead frio que nunca ouviu falar da UniFECAF">❄️ Lead Frio</div>
+        <div class="pill" data-g="perf" data-v="Lead antigo para reativação">♻️ Reativação</div>
+      </div></div>
+      <div><div class="lbl">Objeções que a IA vai usar</div><div class="pills" id="p-obj">
+        <div class="pill on" data-g="obj" data-v="preço alto e falta de dinheiro">💰 Preço</div>
+        <div class="pill on" data-g="obj" data-v="dúvidas sobre qualidade do EAD">🖥️ EAD</div>
+        <div class="pill" data-g="obj" data-v="dúvidas sobre reconhecimento do diploma pelo MEC">📜 Diploma</div>
+        <div class="pill" data-g="obj" data-v="falta de tempo para estudar">⏰ Tempo</div>
+        <div class="pill" data-g="obj" data-v="experiência ruim com outra faculdade EAD">😞 Exp. Ruim</div>
+        <div class="pill" data-g="obj" data-v="concorrente mais barato (Unopar, Anhanguera)">⚔️ Concorrente</div>
+      </div></div>
+      <div><div class="lbl">Etapa do Funil</div><div class="pills" id="p-fun">
+        <div class="pill on" data-g="fun" data-v="Primeiro contato, lead acabou de demonstrar interesse">1º Contato</div>
+        <div class="pill" data-g="fun" data-v="Follow-up, lead já foi contatado mas não fechou">Follow-up</div>
+        <div class="pill" data-g="fun" data-v="Fechamento, lead quase decidindo">Fechamento</div>
+      </div></div>
+      <div><div class="lbl">Perfil Emocional</div><div class="pills" id="p-em">
+        <div class="pill" data-g="em" data-v="Curioso e aberto, receptivo">😊 Receptivo</div>
+        <div class="pill on" data-g="em" data-v="Indeciso e hesitante, precisa de segurança">🤔 Indeciso</div>
+        <div class="pill" data-g="em" data-v="Resistente e cético, questiona tudo">😤 Resistente</div>
+        <div class="pill" data-g="em" data-v="Ansioso, quer respostas rápidas">⚡ Ansioso</div>
+      </div></div>
+    </div>
+    <div class="cfs">
+      <div><div class="lbl">Dificuldade</div><div class="srow"><input type="range" min="1" max="3" value="2" step="1" oninput="updD(this.value)"><span class="sv" id="dv">Médio</span></div><div class="slbs"><span>Fácil</span><span>Médio</span><span>Difícil</span></div></div>
+      <div><div class="lbl">Número de Mensagens</div><div class="srow"><input type="range" min="5" max="25" value="12" step="1" oninput="updM(this.value)"><span class="sv" id="mv">12 msgs</span></div><div class="slbs"><span>5</span><span>~12</span><span>25</span></div></div>
+      <div><div class="lbl">Contexto Extra (opcional)</div><textarea class="ta" id="extra" placeholder="Ex: Lead viu anúncio no Instagram. 28 anos, quer migrar para TI..."></textarea></div>
+    </div>
+    <div class="brow"><button class="btnr" onclick="startSim()">Iniciar Simulação ▶</button><button class="btng" onclick="goHome()">Cancelar</button></div>
+  </div>
+</div>
+
+<div class="screen" id="s-chat">
+  <div class="cwrap">
+    <div class="cbar">
+      <div class="cpers"><div class="cav">🧑</div><div><div class="cn" id="c-ln">Lead</div><div class="col">online agora</div></div></div>
+      <div class="cm"><span class="db" id="c-db">Médio</span><span class="mc" id="c-mc">0/12</span><button class="eb" onclick="endSim()">Encerrar e analisar</button></div>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="cir"><input id="ci" placeholder="Digite sua mensagem..." onkeydown="ck(event)"><button class="sb" id="sbtn" onclick="sendMsg()">➤</button></div>
+  </div>
+</div>
+
+<div class="screen" id="s-voice">
+  <div class="vw">
+    <div class="back" onclick="goHome()">← nova simulação</div>
+    <div class="vc">
+      <div class="cr" id="vr">📞</div>
+      <div><div class="vn" id="v-ln">Lead</div><div class="vst" id="vst">Pronto para iniciar</div></div>
+      <div class="vt" id="vt">00:00</div>
+      <div class="vcs">
+        <button class="cb cb-m hidden" id="vm" onclick="toggleMute()">🎙️</button>
+        <button class="cb cb-s" id="vs2" onclick="startCall()">📞</button>
+        <button class="cb cb-e hidden" id="ve" onclick="endCall()">📵</button>
+      </div>
+    </div>
+    <div><div style="font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-family:var(--fm);margin-bottom:8px">Transcrição — <span id="vc2">0 trocas</span></div><div class="tr" id="tr"><div class="trem">A transcrição aparecerá aqui durante a ligação.</div></div></div>
+    <div class="vir hidden" id="vir"><input id="vi" placeholder="Digite sua resposta (simula sua fala)..." onkeydown="vk(event)"><button class="vs" onclick="sendVMsg()">➤</button></div>
+  </div>
+</div>
+
+<div class="screen" id="s-an">
+  <div class="aw">
+    <div class="back" onclick="goHome()">← nova simulação</div>
+    <div class="ah"><div><div class="at">Análise do Atendimento</div><div class="asb" id="an-sb">Carregando...</div></div><div class="asc"><div class="anum" id="an-n" style="color:var(--muted)">--</div><div class="alb">pontuação</div></div></div>
+    <div id="an-ld" class="ldg"><div class="sp"></div><div class="sts"><div class="stp act" id="s0">⏳ Analisando a conversa...</div><div class="stp" id="s1">⏳ Avaliando técnicas de venda...</div><div class="stp" id="s2">⏳ Identificando pontos de melhoria...</div><div class="stp" id="s3">⏳ Gerando feedback personalizado...</div></div></div>
+    <div id="an-bd" class="abdy hidden">
+      <div class="mg" id="an-met"></div>
+      <div class="ablk" id="an-res"></div>
+      <div class="ablk" id="an-pos"></div>
+      <div class="ablk" id="an-mel"></div>
+      <div class="ablk" id="an-obj"></div>
+      <div class="ablk" id="an-dic"></div>
+      <div class="brow"><button class="btnr" onclick="goHome()">Nova Simulação</button></div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+// =========================================================
+// ⚠️  COLOQUE SUA CHAVE DE API AQUI (linha abaixo):
+const API_KEY = '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';
+// =========================================================
+
+const KB=`MANUAL DE VENDAS UNIFECAF:
+MISSÃO: Mobilidade social — colocar alunos nas melhores posições do mercado de trabalho.
+DIFERENCIAIS:
+1. Nota 9,1/10 Reclame Aqui, Selo RA1000. Melhor IES no Google.
+2. INTERCÂMBIO DIGITAL GRATUITO com Portugal: sem custo extra, em português, sem parar de trabalhar. Aluno recebe badge de faculdade europeia para o LinkedIn.
+3. BADGES ao longo do curso: certificações antes de se formar. Diferencial competitivo no mercado.
+4. CURRÍCULO PRÁTICO: matrizes atualizadas anualmente. TECH com +50% de carga prática. Saúde com 50% prática. Forma para o mercado, não para nota.
+5. SOFT SKILLS: desenvolvimento das 15 mais valorizadas. Ainda mais importantes com IA.
+6. EDUTAINMENT: boliche, ping pong, games no campus. Aprender não precisa ser chato.
+7. DIPLOMA MEC: reconhecido pelo MEC, validade nacional. Bom ranking ENADE.
+8. PORTFÓLIO CONCRETO: alunos saem com projetos reais (vídeos, planilhas, código, podcasts).
+9. FLEXIBILIDADE EAD: estude no seu ritmo, de onde quiser, sem parar de trabalhar.
+10. CERTIFICAÇÕES EXTERNAS: PMI e outras certificações do mercado valem como aprovação em disciplinas.
+METODOLOGIA 7 PASSOS DO CONSULTOR: Empatia → Comunicação Ativa → Personalização → Conhecimento do Produto → Reconhecer a Objeção → Construir Confiança → Apresentar Soluções.
+REGRA DE OURO: Nunca diminua a dor do cliente. Valide a objeção antes de rebater.
+SCRIPTS DE OBJEÇÕES:
+- PREÇO: "Concordo que é um passo importantíssimo. Vamos analisar todas as possibilidades e personalizar a melhor condição para você."
+- EAD: "Dúvidas sobre EAD são super normais. Eu já tive dúvidas também. Fique à vontade, conte comigo."
+- DIPLOMA: "Somos reconhecidos pelo MEC, validade em todo o Brasil. Veja o Reclame Aqui e nosso ranking no ENADE."
+- EXP. RUIM: "Entendo. A UniFECAF é diferente — plataforma superior, suporte completo. Aqui você não tem razão, você É a razão."
+- CONCORRENTE: Compare qualidade, badges, intercâmbio digital, RA1000. Preço menor pode significar menos valor.
+- TEMPO: "Estude no seu ritmo, de onde quiser. Super flexível para conciliar com qualquer rotina de trabalho."
+ABORDAGEM WHATSAPP: Use emojis, mensagens curtas, perguntas abertas: "Como essa graduação mudaria sua vida?"
+ABORDAGEM TELEFONE: "Me fala, qual seu curso de interesse?", "Essa graduação mudaria sua vida de qual forma?"
+REATIVAÇÃO: Tom descontraído + urgência (prazo, oferta) + personalização com histórico anterior.`;
+
+const st={mode:'whatsapp',perf:'Aluno interessado em graduação EAD pela primeira vez',objs:['preço alto e falta de dinheiro','dúvidas sobre qualidade do EAD'],fun:'Primeiro contato, lead acabou de demonstrar interesse',em:'Indeciso e hesitante, precisa de segurança',dif:2,max:12,extra:'',hist:[],vhist:[],mc:0,vc:0,busy:false,ca:false,cs:0,ci:null};
+const NS=['Carlos Silva','Ana Ferreira','João Oliveira','Mariana Costa','Rafael Mendes','Beatriz Santos'];
+function rn(){return NS[Math.floor(Math.random()*NS.length)]}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function goHome(){stopCall();show('s-home')}
+function openCfg(m){st.mode=m;document.getElementById('cfg-mode').textContent=m==='whatsapp'?'Módulo 01 · WhatsApp':'Módulo 02 · Ligação';show('s-cfg')}
+document.querySelectorAll('.pill').forEach(p=>{p.addEventListener('click',()=>{const g=p.dataset.g,v=p.dataset.v;if(g==='obj'){p.classList.toggle('on');st.objs=Array.from(document.querySelectorAll('[data-g="obj"].on')).map(x=>x.dataset.v)}else{document.querySelectorAll(`[data-g="${g}"]`).forEach(x=>x.classList.remove('on'));p.classList.add('on');if(g==='perf')st.perf=v;if(g==='fun')st.fun=v;if(g==='em')st.em=v}})});
+function updD(v){st.dif=+v;document.getElementById('dv').textContent={1:'Fácil',2:'Médio',3:'Difícil'}[v]}
+function updM(v){st.max=+v;document.getElementById('mv').textContent=v+' msgs'}
+function sys(){
+  const dm={1:'FÁCIL — receptivo, poucas objeções, cede após 1-2 bons argumentos',2:'MÉDIO — hesitante, 2-3 objeções ao longo da conversa, cede após bons argumentos',3:'DIFÍCIL — muito resistente, muitas objeções, exige provas concretas, difícil de convencer'};
+  const ob=st.objs.length?st.objs.join('; '):'sem objeções específicas';
+  return `Você é um LEAD SIMULADO para treinamento de vendas da UniFECAF. Está em uma ${st.mode==='whatsapp'?'conversa de WhatsApp':'ligação telefônica'} com um consultor de vendas da UniFECAF.
+PERFIL: ${st.perf}
+FUNIL: ${st.fun}
+EMOCIONAL: ${st.em}
+OBJEÇÕES PARA USAR: ${ob}
+DIFICULDADE: ${dm[st.dif]}
+${st.extra?'CONTEXTO EXTRA: '+st.extra:''}
+REGRAS OBRIGATÓRIAS:
+1. Fale SEMPRE como lead/cliente, NUNCA como vendedor.
+2. Linguagem informal e humana. ${st.mode==='whatsapp'?'Use emojis naturais.':''}
+3. Introduza as objeções de forma orgânica, não todas de uma vez.
+4. Se o vendedor responder bem a uma objeção, mostre que ficou mais convencido, mas não ceda fácil.
+5. ${st.mode==='whatsapp'?'Mensagens CURTAS — 1 a 3 frases, estilo WhatsApp real.':'Fale como em ligação real — use "..." para pausas naturais.'}
+6. Faça perguntas naturais sobre preço, prazo, suporte, metodologia.
+7. NUNCA revele que é IA ou simulação.
+8. Quando convencido, demonstre interesse real em se matricular.
+Responda SEMPRE em português brasileiro.
+CONHECIMENTO UNIFECAF: ${KB}`;
+}
+function anP(h,m){
+  const c=h.map(x=>`[${x.role==='assistant'?'LEAD':'VENDEDOR'}]: ${x.content}`).join('\n');
+  return `Analise esta simulação de ${m==='whatsapp'?'WhatsApp':'ligação'} de vendas da UniFECAF e responda APENAS em JSON válido sem markdown:\n{"pontuacao":<0-100>,"metricas":{"empatia":<0-10>,"conhecimento":<0-10>,"objecoes":<0-10>,"personalizacao":<0-10>,"fechamento":<0-10>},"resumo":"<2-3 frases sobre o desempenho>","positivos":["<ponto positivo com exemplo da conversa>","<ponto 2>","<ponto 3>"],"melhorias":[{"ponto":"<o que melhorar>","exemplo":"<trecho da conversa onde errou>","sugestao":"<como deveria ter sido>"},{"ponto":"<2>","exemplo":"<>","sugestao":"<>"},{"ponto":"<3>","exemplo":"<>","sugestao":"<>"}],"objecoes_an":"<como o vendedor tratou as objeções>","dicas":["<dica específica baseada nesta conversa>","<dica 2>","<dica 3>"],"mot":"<frase motivacional personalizada>"}\n\nCONVERSA:\n${c}\n\nCONHECIMENTO:\n${KB}`;
+}
+async function ai(msgs,system){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system,messages:msgs})
+  });
+  if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Erro API')}
+  const d=await r.json();return d.content[0].text;
+}
+function startSim(){st.extra=document.getElementById('extra').value;st.hist=[];st.vhist=[];st.mc=0;st.vc=0;st.busy=false;st.mode==='whatsapp'?startChat():startVoice()}
+function startChat(){document.getElementById('msgs').innerHTML='';const n=rn();document.getElementById('c-ln').textContent=n;const dl={1:'Fácil',2:'Médio',3:'Difícil'},dc={1:'de',2:'dm',3:'dh'};const b=document.getElementById('c-db');b.textContent=dl[st.dif];b.className='db '+dc[st.dif];updCnt();show('s-chat');aiOpen()}
+async function aiOpen(){st.busy=true;document.getElementById('sbtn').disabled=true;const t=addT();try{const r=await ai([{role:'user',content:'Inicie a conversa como o lead de forma natural.'}],sys());rmT(t);addMsg('them',r);st.hist.push({role:'assistant',content:r});st.mc++;updCnt()}catch(e){rmT(t);addMsg('them','Oi! Vi que vocês têm cursos EAD... pode me contar mais? 😊');st.hist.push({role:'assistant',content:'Oi! Vi que vocês têm cursos EAD... pode me contar mais? 😊'});st.mc++;updCnt()}finally{st.busy=false;document.getElementById('sbtn').disabled=false}}
+function ck(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()}}
+async function sendMsg(){if(st.busy)return;const inp=document.getElementById('ci');const txt=inp.value.trim();if(!txt)return;inp.value='';addMsg('me',txt);st.hist.push({role:'user',content:txt});st.mc++;updCnt();if(st.mc>=st.max){setTimeout(()=>endSim(),700);return}st.busy=true;document.getElementById('sbtn').disabled=true;const t=addT();try{const r=await ai(st.hist,sys());rmT(t);addMsg('them',r);st.hist.push({role:'assistant',content:r});st.mc++;updCnt();if(st.mc>=st.max)setTimeout(()=>endSim(),900)}catch(e){rmT(t);addMsg('them','(não consegui responder, tente novamente)')}finally{st.busy=false;document.getElementById('sbtn').disabled=false}}
+function addMsg(s,t){const m=document.getElementById('msgs');const now=new Date();const tm=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');const el=document.createElement('div');el.className='msg '+s;el.innerHTML=`<div class="bb">${esc(t)}</div><div class="mt">${tm}</div>`;m.appendChild(el);m.scrollTop=m.scrollHeight}
+function addT(){const m=document.getElementById('msgs');const el=document.createElement('div');el.className='typing';el.innerHTML='<span></span><span></span><span></span>';m.appendChild(el);m.scrollTop=m.scrollHeight;return el}
+function rmT(el){if(el&&el.parentNode)el.parentNode.removeChild(el)}
+function updCnt(){document.getElementById('c-mc').textContent=`${st.mc}/${st.max}`}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+function endSim(){show('s-an');document.getElementById('an-sb').textContent=st.mode==='whatsapp'?`WhatsApp · ${st.hist.length} mensagens`:`Ligação · ${st.vhist.length} trocas`;runAn()}
+function startVoice(){document.getElementById('tr').innerHTML='<div class="trem">A transcrição aparecerá aqui durante a ligação.</div>';document.getElementById('v-ln').textContent=rn();document.getElementById('vc2').textContent='0 trocas';document.getElementById('vst').textContent='Pronto para iniciar';document.getElementById('vt').textContent='00:00';document.getElementById('vt').className='vt';document.getElementById('vr').className='cr';document.getElementById('vs2').classList.remove('hidden');document.getElementById('ve').classList.add('hidden');document.getElementById('vm').classList.add('hidden');document.getElementById('vir').classList.add('hidden');show('s-voice')}
+async function startCall(){st.ca=true;st.cs=0;st.vhist=[];st.vc=0;document.getElementById('vr').className='cr on';document.getElementById('vst').textContent='Ligação em andamento...';document.getElementById('vs2').classList.add('hidden');document.getElementById('ve').classList.remove('hidden');document.getElementById('vm').classList.remove('hidden');document.getElementById('vir').classList.remove('hidden');document.getElementById('vt').className='vt on';st.ci=setInterval(()=>{st.cs++;const m=Math.floor(st.cs/60).toString().padStart(2,'0'),s=(st.cs%60).toString().padStart(2,'0');document.getElementById('vt').textContent=m+':'+s},1000);addTL('ld','...');try{const r=await ai([{role:'user',content:'Atenda a ligação de forma natural como lead real recebendo uma chamada.'}],sys());updLTL('ld',r);st.vhist.push({role:'assistant',content:r});st.vc++;updVC()}catch(e){updLTL('ld','Alô? Quem fala?');st.vhist.push({role:'assistant',content:'Alô? Quem fala?'})}}
+function stopCall(){if(st.ci)clearInterval(st.ci);st.ca=false}
+function endCall(){stopCall();st.hist=st.vhist;endSim()}
+function toggleMute(){const b=document.getElementById('vm');b.textContent=b.textContent==='🎙️'?'🔇':'🎙️'}
+function vk(e){if(e.key==='Enter'){e.preventDefault();sendVMsg()}}
+async function sendVMsg(){const inp=document.getElementById('vi');const txt=inp.value.trim();if(!txt||!st.ca)return;inp.value='';addTL('ag',txt);st.vhist.push({role:'user',content:txt});st.vc++;updVC();if(st.vc>=st.max){setTimeout(()=>endCall(),700);return}addTL('ld','...');try{const r=await ai(st.vhist,sys());updLTL('ld',r);st.vhist.push({role:'assistant',content:r});st.vc++;updVC()}catch(e){updLTL('ld','(falha na conexão)')}}
+function addTL(w,t){const tr=document.getElementById('tr');const e=tr.querySelector('.trem');if(e)e.remove();const el=document.createElement('div');el.className='trl '+w;el.innerHTML=`<strong>${w==='ag'?'VENDEDOR':'LEAD'}</strong>${esc(t)}`;tr.appendChild(el);tr.scrollTop=tr.scrollHeight}
+function updLTL(w,t){const tr=document.getElementById('tr');const ls=tr.querySelectorAll('.trl.'+w);if(ls.length){ls[ls.length-1].innerHTML=`<strong>${w==='ag'?'VENDEDOR':'LEAD'}</strong>${esc(t)}`;tr.scrollTop=tr.scrollHeight}}
+function updVC(){document.getElementById('vc2').textContent=st.vc+' trocas'}
+async function runAn(){document.getElementById('an-ld').classList.remove('hidden');document.getElementById('an-bd').classList.add('hidden');document.getElementById('an-n').textContent='--';document.getElementById('an-n').style.color='var(--muted)';const ss=['s0','s1','s2','s3'];let si=0;const ti=setInterval(()=>{if(si>0){const p=document.getElementById(ss[si-1]);p.className='stp done';p.textContent='✅ '+p.textContent.slice(2)}if(si<ss.length){document.getElementById(ss[si]).className='stp act';si++}else clearInterval(ti)},1300);const h=st.mode==='whatsapp'?st.hist:st.vhist;try{const raw=await ai([{role:'user',content:anP(h,st.mode)}],'Analista de vendas especialista em educação EAD. Responda APENAS em JSON válido sem markdown ou backticks.');clearInterval(ti);ss.forEach(s=>{const el=document.getElementById(s);el.className='stp done'});let d;try{d=JSON.parse(raw.replace(/```json|```/g,'').trim())}catch(e){d=fb()}render(d)}catch(e){clearInterval(ti);render(fb())}}
+function fb(){return{pontuacao:60,metricas:{empatia:6,conhecimento:6,objecoes:5,personalizacao:5,fechamento:5},resumo:'O vendedor demonstrou conhecimento básico e manteve a conversa. Há espaço para melhorar personalização e manejo de objeções.',positivos:['Manteve tom cordial e profissional durante toda a conversa','Apresentou os diferenciais da UniFECAF','Tentou criar conexão com o lead'],melhorias:[{ponto:'Personalização insuficiente',exemplo:'Respostas genéricas sem mencionar o contexto específico do lead',sugestao:'Use o nome do lead e mencione a situação específica dele desde o início'},{ponto:'Não validou a objeção antes de rebater',exemplo:'Foi direto ao argumento sem reconhecer a dor do cliente',sugestao:'"Entendo sua preocupação, é totalmente válida..." antes de apresentar a solução'},{ponto:'Call-to-action fraco',exemplo:'Não propôs um próximo passo concreto ao final',sugestao:'"Que tal agendar uma visita ao ambiente do aluno? Posso te mostrar como funciona."'}],objecoes_an:'O vendedor respondeu às objeções mas poderia ter sido mais empático antes de apresentar soluções, conforme ensinado no manual da UniFECAF.',dicas:['Use o intercâmbio digital e os badges como argumentos — são muito poderosos e pouco usados pelos vendedores','Antes de falar sobre preço, pergunte: "Como essa graduação mudaria sua vida?" — cria valor antes da conversa financeira','Use o Reclame Aqui (nota 9,1) e o RA1000 como prova social sempre que o lead mostrar ceticismo'],mot:'Cada simulação te torna um consultor melhor. O vendedor de excelência se constrói na prática. Continue!'}}
+function render(d){document.getElementById('an-ld').classList.add('hidden');const ab=document.getElementById('an-bd');ab.classList.remove('hidden');const sc=d.pontuacao||0;const num=document.getElementById('an-n');num.textContent=sc;num.style.color=sc>=75?'#22c55e':sc>=50?'#f59e0b':'#ef4444';const m=d.metricas||{};const md=[{k:'empatia',l:'Empatia'},{k:'conhecimento',l:'Conhecimento'},{k:'objecoes',l:'Objeções'},{k:'personalizacao',l:'Personalização'},{k:'fechamento',l:'Fechamento'}];document.getElementById('an-met').innerHTML=md.map(x=>{const v=m[x.k]||0;const c=v>=8?'#22c55e':v>=5?'#f59e0b':'#ef4444';return`<div class="met"><div class="mv" style="color:${c}">${v}<span style="font-size:11px">/10</span></div><div class="mlb">${x.l}</div></div>`}).join('');document.getElementById('an-res').innerHTML=`<div class="albl">📊 Resumo Geral</div><div class="atx">${d.resumo||''}</div>${d.mot?`<div class="aq ok" style="margin-top:10px">${d.mot}</div>`:''}`;document.getElementById('an-pos').innerHTML=`<div class="albl" style="color:#22c55e">✅ O que foi bem</div>${(d.positivos||[]).map(p=>`<div class="ai"><span class="aic">✓</span><span>${p}</span></div>`).join('')}`;document.getElementById('an-mel').innerHTML=`<div class="albl" style="color:#ef4444">⚠️ Pontos de Melhoria</div>${(d.melhorias||[]).map(x=>`<div class="ai" style="flex-direction:column;align-items:stretch"><div style="display:flex;gap:8px;align-items:flex-start"><span class="aic">→</span><strong style="font-size:13px">${x.ponto}</strong></div>${x.exemplo?`<div class="aq">❌ Como aconteceu: "${x.exemplo}"</div>`:''}${x.sugestao?`<div class="aq ok">✅ Como deveria ser: ${x.sugestao}</div>`:''}</div>`).join('')}`;document.getElementById('an-obj').innerHTML=`<div class="albl" style="color:#f59e0b">🛡️ Análise de Objeções</div><div class="atx">${d.objecoes_an||''}</div>`;document.getElementById('an-dic').innerHTML=`<div class="albl">💡 Dicas Personalizadas</div>${(d.dicas||[]).map(x=>`<div class="ai"><span class="aic">💡</span><span>${x}</span></div>`).join('')}`}
+</script>
+</body>
+</html>
