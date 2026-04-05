@@ -95,7 +95,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:15px 2
 .sb:hover{opacity:.85}
 .sb:disabled{opacity:.35;cursor:not-allowed}
 #s-voice{justify-content:center}
-.vw{width:100%;max-width:420px;display:flex;flex-direction:column;gap:18px}
+.vw{width:100%;max-width:460px;display:flex;flex-direction:column;gap:18px}
+.cr.listening{background:#1a0505!important;border-color:rgba(200,16,46,.5)!important}
+.cr.speaking{background:#051a0a!important;border-color:rgba(34,197,94,.6)!important}
 .vc{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
 .cr{width:110px;height:110px;border-radius:50%;background:var(--s2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative}
 .cr.on{background:#132213;border-color:rgba(34,197,94,.35)}
@@ -231,13 +233,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:15px 2
       <div><div class="vn" id="v-ln">Lead</div><div class="vst" id="vst">Pronto para iniciar</div></div>
       <div class="vt" id="vt">00:00</div>
       <div class="vcs">
-        <button class="cb cb-m hidden" id="vm" onclick="toggleMute()">🎙️</button>
+        <button class="cb cb-m hidden" id="vm" onclick="toggleMute()" title="Mudo">🎙️</button>
         <button class="cb cb-s" id="vs2" onclick="startCall()">📞</button>
         <button class="cb cb-e hidden" id="ve" onclick="endCall()">📵</button>
       </div>
+      <div class="vhint" id="vhint" style="display:none;font-size:12px;color:var(--muted);font-family:var(--fm);background:var(--s2);padding:8px 14px;border-radius:8px;border:1px solid var(--border);text-align:center;line-height:1.6"></div>
     </div>
     <div><div style="font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-family:var(--fm);margin-bottom:8px">Transcrição — <span id="vc2">0 trocas</span></div><div class="tr" id="tr"><div class="trem">A transcrição aparecerá aqui durante a ligação.</div></div></div>
-    <div class="vir hidden" id="vir"><input id="vi" placeholder="Digite sua resposta (simula sua fala)..." onkeydown="vk(event)"><button class="vs" onclick="sendVMsg()">➤</button></div>
+    <button class="btnr hidden" id="v-end-btn" onclick="endCall()" style="width:100%;justify-content:center">Encerrar e analisar</button>
   </div>
 </div>
 
@@ -262,7 +265,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:15px 2
 <script>
 // =========================================================
 // ⚠️  COLOQUE SUA CHAVE DE API AQUI (linha abaixo):
-const API_KEY = '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';
+const API_KEY = 'SUA_CHAVE_AQUI';
 // =========================================================
 
 const KB=`MANUAL DE VENDAS UNIFECAF:
@@ -346,13 +349,150 @@ function rmT(el){if(el&&el.parentNode)el.parentNode.removeChild(el)}
 function updCnt(){document.getElementById('c-mc').textContent=`${st.mc}/${st.max}`}
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
 function endSim(){show('s-an');document.getElementById('an-sb').textContent=st.mode==='whatsapp'?`WhatsApp · ${st.hist.length} mensagens`:`Ligação · ${st.vhist.length} trocas`;runAn()}
-function startVoice(){document.getElementById('tr').innerHTML='<div class="trem">A transcrição aparecerá aqui durante a ligação.</div>';document.getElementById('v-ln').textContent=rn();document.getElementById('vc2').textContent='0 trocas';document.getElementById('vst').textContent='Pronto para iniciar';document.getElementById('vt').textContent='00:00';document.getElementById('vt').className='vt';document.getElementById('vr').className='cr';document.getElementById('vs2').classList.remove('hidden');document.getElementById('ve').classList.add('hidden');document.getElementById('vm').classList.add('hidden');document.getElementById('vir').classList.add('hidden');show('s-voice')}
-async function startCall(){st.ca=true;st.cs=0;st.vhist=[];st.vc=0;document.getElementById('vr').className='cr on';document.getElementById('vst').textContent='Ligação em andamento...';document.getElementById('vs2').classList.add('hidden');document.getElementById('ve').classList.remove('hidden');document.getElementById('vm').classList.remove('hidden');document.getElementById('vir').classList.remove('hidden');document.getElementById('vt').className='vt on';st.ci=setInterval(()=>{st.cs++;const m=Math.floor(st.cs/60).toString().padStart(2,'0'),s=(st.cs%60).toString().padStart(2,'0');document.getElementById('vt').textContent=m+':'+s},1000);addTL('ld','...');try{const r=await ai([{role:'user',content:'Atenda a ligação de forma natural como lead real recebendo uma chamada.'}],sys());updLTL('ld',r);st.vhist.push({role:'assistant',content:r});st.vc++;updVC()}catch(e){updLTL('ld','Alô? Quem fala?');st.vhist.push({role:'assistant',content:'Alô? Quem fala?'})}}
-function stopCall(){if(st.ci)clearInterval(st.ci);st.ca=false}
+function startVoice(){document.getElementById('tr').innerHTML='<div class="trem">A transcrição aparecerá aqui durante a ligação.</div>';document.getElementById('v-ln').textContent=rn();document.getElementById('vc2').textContent='0 trocas';document.getElementById('vst').textContent='Pronto para iniciar';document.getElementById('vt').textContent='00:00';document.getElementById('vt').className='vt';document.getElementById('vr').className='cr';document.getElementById('vs2').classList.remove('hidden');document.getElementById('ve').classList.add('hidden');document.getElementById('vm').classList.add('hidden');document.getElementById('v-end-btn').classList.add('hidden');document.getElementById('vhint').style.display='none';show('s-voice')}
+
+// TTS — faz o lead falar
+function speak(text, onEnd){
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'pt-BR';
+  utt.rate = 0.95;
+  utt.pitch = 1;
+  // tenta pegar voz pt-BR
+  const voices = window.speechSynthesis.getVoices();
+  const ptVoice = voices.find(v=>v.lang==='pt-BR') || voices.find(v=>v.lang.startsWith('pt'));
+  if(ptVoice) utt.voice = ptVoice;
+  utt.onend = () => { if(onEnd) onEnd(); };
+  utt.onerror = () => { if(onEnd) onEnd(); };
+  window.speechSynthesis.speak(utt);
+}
+
+// STT — ouve o vendedor
+let recognizer = null;
+function startListening(onResult){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ alert('Seu navegador não suporta reconhecimento de voz. Use o Chrome.'); return; }
+  recognizer = new SR();
+  recognizer.lang = 'pt-BR';
+  recognizer.continuous = false;
+  recognizer.interimResults = false;
+  recognizer.onresult = (e) => {
+    const txt = e.results[0][0].transcript;
+    if(onResult) onResult(txt);
+  };
+  recognizer.onerror = (e) => {
+    setVoiceState('on');
+    setVoiceHint('Não ouvi nada. Clique no microfone para falar novamente.');
+  };
+  recognizer.onend = () => {};
+  recognizer.start();
+}
+function stopListening(){ if(recognizer){ try{recognizer.stop()}catch(e){} recognizer=null; } }
+
+function setVoiceState(state){
+  const ring = document.getElementById('vr');
+  const status = document.getElementById('vst');
+  ring.className = 'cr' + (state==='on'?' on':state==='listening'?' on listening':state==='speaking'?' on speaking':'');
+  if(state==='idle') { ring.textContent='📞'; status.textContent='Pronto para iniciar'; }
+  if(state==='on')   { ring.textContent='🎤'; status.textContent='Clique no microfone para falar'; }
+  if(state==='listening') { ring.textContent='🎤'; status.style.color='var(--red)'; status.textContent='Ouvindo você...'; }
+  if(state==='speaking')  { ring.textContent='🔊'; status.style.color='var(--green)'; status.textContent='Lead falando...'; }
+  if(state==='thinking')  { ring.textContent='💭'; status.style.color='var(--yellow)'; status.textContent='Lead pensando...'; }
+}
+function setVoiceHint(msg){
+  const h = document.getElementById('vhint');
+  h.style.display = msg ? 'block' : 'none';
+  h.textContent = msg || '';
+}
+
+async function startCall(){
+  st.ca=true; st.cs=0; st.vhist=[]; st.vc=0;
+  document.getElementById('vs2').classList.add('hidden');
+  document.getElementById('ve').classList.remove('hidden');
+  document.getElementById('vm').classList.remove('hidden');
+  document.getElementById('v-end-btn').classList.remove('hidden');
+  document.getElementById('vt').className='vt on';
+  st.ci=setInterval(()=>{st.cs++;const m=Math.floor(st.cs/60).toString().padStart(2,'0'),s=(st.cs%60).toString().padStart(2,'0');document.getElementById('vt').textContent=m+':'+s},1000);
+
+  setVoiceState('thinking');
+  setVoiceHint('Aguarde, o lead está atendendo...');
+
+  // carrega vozes (necessário em alguns browsers)
+  if(window.speechSynthesis.getVoices().length===0){
+    await new Promise(r=>{ window.speechSynthesis.onvoiceschanged=r; setTimeout(r,1500); });
+  }
+
+  try{
+    const r = await ai([{role:'user',content:'Atenda a ligação de forma natural como lead real recebendo uma chamada. Seja breve, 1-2 frases.'}],sys());
+    addTL('ld',r);
+    st.vhist.push({role:'assistant',content:r}); st.vc++; updVC();
+    setVoiceState('speaking');
+    setVoiceHint('O lead está falando...');
+    speak(r, ()=>{
+      setVoiceState('on');
+      setVoiceHint('Sua vez! Clique no microfone 🎤 e fale sua resposta.');
+    });
+  }catch(e){
+    const fallback='Alô? Quem fala?';
+    addTL('ld',fallback);
+    st.vhist.push({role:'assistant',content:fallback});
+    setVoiceState('on');
+    setVoiceHint('Sua vez! Clique no microfone 🎤 e fale sua resposta.');
+  }
+}
+
+function toggleMute(){
+  const b=document.getElementById('vm');
+  if(!st.ca) return;
+  if(st.listening){
+    stopListening();
+    st.listening=false;
+    b.textContent='🎙️';
+    b.classList.remove('muted');
+    setVoiceState('on');
+    setVoiceHint('Microfone pausado. Clique novamente para falar.');
+  } else {
+    b.textContent='🔴';
+    b.classList.add('muted');
+    setVoiceState('listening');
+    setVoiceHint('Ouvindo... fale agora!');
+    st.listening=true;
+    startListening(async (txt)=>{
+      st.listening=false;
+      b.textContent='🎙️';
+      b.classList.remove('muted');
+      if(!txt||!st.ca) return;
+      addTL('ag',txt);
+      st.vhist.push({role:'user',content:txt}); st.vc++; updVC();
+      if(st.vc>=st.max){ setTimeout(()=>endCall(),700); return; }
+      setVoiceState('thinking');
+      setVoiceHint('Lead pensando na resposta...');
+      try{
+        const r=await ai(st.vhist,sys());
+        addTL('ld',r);
+        st.vhist.push({role:'assistant',content:r}); st.vc++; updVC();
+        setVoiceState('speaking');
+        setVoiceHint('O lead está falando...');
+        speak(r,()=>{
+          setVoiceState('on');
+          setVoiceHint('Sua vez! Clique no microfone 🎤 e fale sua resposta.');
+        });
+      }catch(e){
+        setVoiceState('on');
+        setVoiceHint('Erro de conexão. Tente novamente.');
+      }
+    });
+  }
+}
+
+function stopCall(){
+  if(st.ci)clearInterval(st.ci);
+  st.ca=false; st.listening=false;
+  stopListening();
+  window.speechSynthesis.cancel();
+}
 function endCall(){stopCall();st.hist=st.vhist;endSim()}
-function toggleMute(){const b=document.getElementById('vm');b.textContent=b.textContent==='🎙️'?'🔇':'🎙️'}
-function vk(e){if(e.key==='Enter'){e.preventDefault();sendVMsg()}}
-async function sendVMsg(){const inp=document.getElementById('vi');const txt=inp.value.trim();if(!txt||!st.ca)return;inp.value='';addTL('ag',txt);st.vhist.push({role:'user',content:txt});st.vc++;updVC();if(st.vc>=st.max){setTimeout(()=>endCall(),700);return}addTL('ld','...');try{const r=await ai(st.vhist,sys());updLTL('ld',r);st.vhist.push({role:'assistant',content:r});st.vc++;updVC()}catch(e){updLTL('ld','(falha na conexão)')}}
+function vk(e){if(e.key==='Enter'){e.preventDefault();}}
 function addTL(w,t){const tr=document.getElementById('tr');const e=tr.querySelector('.trem');if(e)e.remove();const el=document.createElement('div');el.className='trl '+w;el.innerHTML=`<strong>${w==='ag'?'VENDEDOR':'LEAD'}</strong>${esc(t)}`;tr.appendChild(el);tr.scrollTop=tr.scrollHeight}
 function updLTL(w,t){const tr=document.getElementById('tr');const ls=tr.querySelectorAll('.trl.'+w);if(ls.length){ls[ls.length-1].innerHTML=`<strong>${w==='ag'?'VENDEDOR':'LEAD'}</strong>${esc(t)}`;tr.scrollTop=tr.scrollHeight}}
 function updVC(){document.getElementById('vc2').textContent=st.vc+' trocas'}
