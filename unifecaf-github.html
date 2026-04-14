@@ -265,7 +265,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:15px 2
 <script>
 // =========================================================
 // ⚠️  COLOQUE SUA CHAVE DE API AQUI (linha abaixo):
-const API_KEY = "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";
+const WORKER_URL = "https://srferoz.pauloperboni.workers.dev";
 // =========================================================
 
 const KB=`MANUAL DE VENDAS UNIFECAF:
@@ -330,13 +330,14 @@ function anP(h,m){
   return `Analise esta simulação de ${m==='whatsapp'?'WhatsApp':'ligação'} de vendas da UniFECAF e responda APENAS em JSON válido sem markdown:\n{"pontuacao":<0-100>,"metricas":{"empatia":<0-10>,"conhecimento":<0-10>,"objecoes":<0-10>,"personalizacao":<0-10>,"fechamento":<0-10>},"resumo":"<2-3 frases sobre o desempenho>","positivos":["<ponto positivo com exemplo da conversa>","<ponto 2>","<ponto 3>"],"melhorias":[{"ponto":"<o que melhorar>","exemplo":"<trecho da conversa onde errou>","sugestao":"<como deveria ter sido>"},{"ponto":"<2>","exemplo":"<>","sugestao":"<>"},{"ponto":"<3>","exemplo":"<>","sugestao":"<>"}],"objecoes_an":"<como o vendedor tratou as objeções>","dicas":["<dica específica baseada nesta conversa>","<dica 2>","<dica 3>"],"mot":"<frase motivacional personalizada>"}\n\nCONVERSA:\n${c}\n\nCONHECIMENTO:\n${KB}`;
 }
 async function ai(msgs,system){
-  const r=await fetch('https://api.anthropic.com/v1/messages',{
+  const r=await fetch(WORKER_URL,{
     method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system,messages:msgs})
   });
   if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Erro API')}
   const d=await r.json();return d.content[0].text;
+}
 }
 function startSim(){st.extra=document.getElementById('extra').value;st.hist=[];st.vhist=[];st.mc=0;st.vc=0;st.busy=false;st.mode==='whatsapp'?startChat():startVoice()}
 function startChat(){document.getElementById('msgs').innerHTML='';const n=rn();document.getElementById('c-ln').textContent=n;const dl={1:'Fácil',2:'Médio',3:'Difícil'},dc={1:'de',2:'dm',3:'dh'};const b=document.getElementById('c-db');b.textContent=dl[st.dif];b.className='db '+dc[st.dif];updCnt();show('s-chat');aiOpen()}
