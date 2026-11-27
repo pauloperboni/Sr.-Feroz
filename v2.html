@@ -448,7 +448,7 @@ async function ai(msgs,system){
   const r=await fetch(WORKER_URL,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-5',max_tokens:1000,thinking:{type:'disabled'},system,messages:msgs})
+    body:JSON.stringify({model:'claude-sonnet-5',max_tokens:4000,thinking:{type:'disabled'},system,messages:msgs})
   });
   if(!r.ok){const e=await r.json();throw new Error(e.error?.message||'Erro API')}
   const d=await r.json();const t=d.content.find(b=>b.type==='text');return t?t.text:'';
